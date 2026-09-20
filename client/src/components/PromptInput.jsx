@@ -1,10 +1,18 @@
 import { MicIcon, CloudUploadIcon, Loader2Icon, ArrowRightIcon } from 'lucide-react';
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 const PromptInput = ({onSubmit, loading=false, placeholder= "Describe the website you want to build...", large=false, autoFocus=false, varient="default"}) =>
      {
         const [value, setValue] = useState("");
         const textareaRef = useRef(null)
+
+
+        useEffect(()=>{
+            if(autoFocus && textareaRef.current){
+                textareaRef.current.focus();
+            }
+        },[autoFocus])
+        
 
         const handleSubmit=(e)=>{
             if(e) e.preventDefault()
