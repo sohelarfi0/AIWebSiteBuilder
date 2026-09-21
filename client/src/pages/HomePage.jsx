@@ -120,7 +120,8 @@ const HomePage = () => {
                          < Trash2Icon size={14}/>
 
                         </button>
-                        <ArrowRightIcon size={14} className="text-zinc-200 group-hover:text-white"/>
+                        <ArrowRightIcon size={14} className="text-zinc-200
+                         group-hover:text-white"/>
                       </div>
 
                     </div>
