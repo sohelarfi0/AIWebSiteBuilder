@@ -29,9 +29,55 @@ const ChatPanel = ({messages, onSend, loading}) => {
                             <BotMessageSquareIcon  size={14} className='text-zinc-700'/>
                         )}
                     </div>
+                    <div className='flex-1 min-w-0'>
+                        <p className='text-xs font-medium text-zinc-500 mb-1 uppercase tracking-wider'>
+                            {msg.role=== "user" ? "You" : "AI"}
+                        </p>
+                        <p className='text-[13px] text-zinc-700 leading- tracking-wider 
+                        whitespace-pre-wrap wrap-break-word'>
+                            {msg.content.split("- `/").map((text, i)=>(
+                                <span key={i} className='block mt-3'>
+                                    <span className={i === 0 ? "hidden" : " "}>-`/</span>
+                                    {text}
+                                </span>
+                            ))}
+                        </p>
+
+                    </div>
                 </div>
 
             ))}
+
+            {
+                loading && (
+                    <div className='flex gap-2.5 items-start'>
+                        <div className='shrink-0 w-6 h-6 rounded-md flex- items-center justify-center
+                        mt-0.5 bg-zinc-900/5'>
+                            <BotIcon size={13} className='text-zinc-900' />
+                        </div>
+                        <div className='flex-1'>
+                            <p className='text-[11px] font-medium text-zinc-400 mb-2 uppercase
+                            tracking-wider'>AI</p>
+                            <div className='dot-loader'>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+
+                        </div>
+                    </div>
+                )
+            }
+            <div ref={bottomRef}/>
+
+
+            
+        </div>
+        {/* Input */}
+        <div className='p-3 border-t border-zinc-200'>
+            <PromptInput  onSubmit={onSend} loading={loading} placeholder='Ask AI to modify...'
+             autoFocus/>
+
         </div>
 
     </div>

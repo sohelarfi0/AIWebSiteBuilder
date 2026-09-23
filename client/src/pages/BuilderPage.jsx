@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useAppContext } from '../context/AppContext'
 import BuilderHeader from '../components/BuilderHeader'
 import {FolderTreeIcon, MessageSquareIcon} from 'lucide-react'
+import ChatPanel from '../components/ChatPanel'
+import FileExplorer from '../components/FileExplorer'
 
 
 
@@ -14,7 +16,14 @@ const BuilderPage = () => {
   const [publishing, setPublishing] = useState(false);
   const [publishUrl, setPublishUrl] = useState(null);
 
-  const {activeProject,loadingActiveProject, activeFile, showCode, setActiveFile, setShowCode, loadProject, logout} = useAppContext();
+  const {activeProject,
+    loadingActiveProject, activeFile, 
+    showCode,chatLoading, setActiveFile, setShowCode,
+     loadProject, handleChat,logout} = useAppContext();
+
+  
+
+  
 
   useEffect(()=>{
     if(!id) return;
@@ -90,18 +99,34 @@ const BuilderPage = () => {
           <div className='flex-1 overflow-hidden'>
             {
               leftTab === 'chat' ? (
-                <div >Chat Panel</div>
+                <ChatPanel  messages={activeProject.messages} onSend={handleChat}
+                loading={chatLoading}/>
               ):(
-                <div>File Explorer</div>
+                <FileExplorer  files={activeProject.files} activeFile={activeFile}
+                onFileSelect={(path)=>{
+                  setActiveFile(path);
+                  setShowCode(true)
+                }}/>
               )
             }
           </div>
+        </div>
+
+        {/* preview / code area */}
+        <div className='flex-1 overflow-hidden'>
+          {activeProject.status === "pending" || activeProject.status === "generating" || activeProject.status === "failed" ? (
+            <Loading />
+          ):(
+            <p>
+              PreviewPanel
+            </p>
+          )}
         </div>
       </div>
 
 
     </div>
-  )
-}
+  )}
+
 
 export default BuilderPage
