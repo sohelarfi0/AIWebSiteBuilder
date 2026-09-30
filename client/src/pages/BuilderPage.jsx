@@ -5,6 +5,11 @@ import BuilderHeader from '../components/BuilderHeader'
 import {FolderTreeIcon, MessageSquareIcon} from 'lucide-react'
 import ChatPanel from '../components/ChatPanel'
 import FileExplorer from '../components/FileExplorer'
+import PreviewPanel from '../components/PreviewPanel'
+import AgentProgressDashboard from '../components/AgentProgressDashboard'
+import PublishModal from '../components/PublishModal'
+import api from '../api/api'
+import toast from 'react-hot-toast'
 
 
 
@@ -50,9 +55,27 @@ const BuilderPage = () => {
   }
 
   const handlePublish = async ()=>{
+    if(!id) return ;
+    setPublishing(true)
+    try {
+      await api.post(`/api/projects/${id}/publish`);
+      const url = `${window.location.origin}/publish/${id}`;
+      setPublishUrl(url);
+      toast.success("Website published successfully!")
+      
+    } catch (err) {
+      console.error("Publish failed:", err);
+      toast.error(err?.response?.data?.error || "Publish failed");
+
+      
+    }finally{
+      setPublishing(false)
+    }
     
   }
   const handleDownload = async ()=>{
+    if(!activeProject) return ;
+    exportProjectZip(activeProject)
 
   }
 
@@ -114,15 +137,23 @@ const BuilderPage = () => {
 
         {/* preview / code area */}
         <div className='flex-1 overflow-hidden'>
-          {activeProject.status === "pending" || activeProject.status === "generating" || activeProject.status === "failed" ? (
-            <Loading />
+          {activeProject.status === "pending" ||
+           activeProject.status === "generating" || 
+           activeProject.status === "failed" ? (
+            <AgentProgressDashboard  project={activeProject}/>
           ):(
-            <p>
-              PreviewPanel
-            </p>
+           <PreviewPanel  project={activeProject}
+            activeFiles={activeFile} 
+            showCode={showCode}/>
+  
           )}
         </div>
       </div>
+      {publishUrl && <PublishModal publishUrl={publishUrl} onClose={()=> setPublishUrl(null)}/>
+
+      }
+
+
 
 
     </div>
