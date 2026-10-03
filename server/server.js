@@ -3,22 +3,23 @@ import "dotenv/config";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { connectToDatabase } from "./config/db.js";
+import authRouter from "./routes/authRoutes.js";
+
 
 const app = express();
 
 
-connectToDatabase()
-// Build allowed origins from ORIGIN env var, fallback to Vite default
-const allowedOrigins = process.env.ORIGIN
-    ? process.env.ORIGIN.split(",").map(s => s.trim()).filter(Boolean)
-    : ["http://localhost:5173"];
+await connectToDatabase()
 
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+app.use(cors({origin:process.env.ORIGINS.split(","), credentials: true}))
 app.use(cookieParser())
 app.use(express.json())
 
 
 app.get("/",(req, res)=> res.send("Server is Live!"))
+app.use('/api/auth',authRouter)
+
+
 
 // Centralized Error Handling Middleware
 app.use((err,_req,res,_next)=>{
